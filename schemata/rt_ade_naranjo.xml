@@ -1,0 +1,28 @@
+<View>
+  <Relations>
+    <Relation value="Doubtful"/>
+    <Relation value="Possible"/>
+    <Relation value="Probable"/>
+    <Relation value="Certain"/>
+  </Relations>
+  <View style="display:flex;align-items:start;gap:8px;flex-direction:column-reverse">
+    <Text name="text" value="$text" granularity="word"/>
+    <TextArea name="CUI" toName="text" editable="true"
+              showSubmitButton="true" transcription="false"
+              perRegion="true" required="true" maxSubmissions="1"
+              rows="5" placeholder="Non UMLS Concept"
+              displayMode="region-list"/>
+    <Choices name="DocTimeRel" toName="text" perRegion="true">
+      <Choice value="BEFORE" background="aqua"/>
+      <Choice value="OVERLAP" background="teal"/>
+      <Choice value="BEFORE-OVERLAP" background="blue"/>
+      <Choice value="AFTER" background="navy"/>
+    </Choices>
+    <Labels name="Event" toName="text" showInline="true">
+      <Label value="Adverse Event" background="red"/>
+      <Label value="Radiotherapy Treatment" background="magenta"/>
+    </Labels>
+  </View>
+</View><!-- {"data": {
+  "text": "Patient reported nausea one week after previous radiotherapy session, patient reported dizziness immediately after today's session as well."
+}} -->
