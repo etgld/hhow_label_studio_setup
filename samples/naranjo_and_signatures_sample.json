@@ -1,0 +1,77 @@
+[
+  {
+    "value": {
+      "start": 48,
+      "end": 68,
+      "text": "radiotherapy session",
+      "labels": [
+        "Radiotherapy Treatment"
+      ]
+    },
+    "id": "a4itcT4aGA",
+    "from_name": "Event",
+    "to_name": "text",
+    "type": "labels",
+    "origin": "manual"
+  },
+  {
+    "value": {
+      "start": 112,
+      "end": 117,
+      "text": "boost",
+      "labels": [
+        "Boost"
+      ]
+    },
+    "id": "_O9Ax6NMra",
+    "from_name": "RadiotherapySignature",
+    "to_name": "text",
+    "type": "labels",
+    "origin": "manual"
+  },
+  {
+    "value": {
+      "start": 126,
+      "end": 129,
+      "text": "1Gy",
+      "labels": [
+        "Secondary Dose"
+      ]
+    },
+    "id": "wmqb7k0rpQ",
+    "from_name": "RadiotherapySignature",
+    "to_name": "text",
+    "type": "labels",
+    "origin": "manual"
+  },
+  {
+    "value": {
+      "start": 137,
+      "end": 153,
+      "text": "lower right lung",
+      "labels": [
+        "Site"
+      ]
+    },
+    "id": "_mCJC5swsU",
+    "from_name": "RadiotherapySignature",
+    "to_name": "text",
+    "type": "labels",
+    "origin": "manual"
+  },
+  {
+    "value": {
+      "start": 96,
+      "end": 105,
+      "text": "next week",
+      "labels": [
+        "Date"
+      ]
+    },
+    "id": "JktHp0_qQe",
+    "from_name": "RadiotherapySignature",
+    "to_name": "text",
+    "type": "labels",
+    "origin": "manual"
+  }
+]
