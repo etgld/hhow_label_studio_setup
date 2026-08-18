@@ -1,0 +1,52 @@
+===================================================================
+Report ID.....................report01_PRG
+Patient ID....................PT003456
+Patient Name..................Sample Patient C
+Principal Date................20240215 1030
+Record Type...................ONCOLOGY PROGRESS NOTE
+===================================================================
+[Report de-identified (Limited dataset compliant) by De-ID v.6.24.5.1]
+
+CHIEF COMPLAINT::
+Follow-up for ovarian cancer treatment.
+
+HISTORY OF PRESENT ILLNESS::
+The patient is a 61-year-old female diagnosed with stage IIIC high-grade
+serous ovarian carcinoma in November 2023. She underwent total abdominal
+hysterectomy with bilateral salpingo-oophorectomy and optimal debulking
+surgery on December 5, 2023.
+
+TREATMENT HISTORY::
+Postoperatively, the patient initiated adjuvant chemotherapy with
+carboplatin AUC 5 and paclitaxel 175 mg/m2 on January 8, 2024. She has
+now completed 3 cycles of chemotherapy with treatments every 3 weeks.
+Most recent infusion was on February 12, 2024. She is scheduled to receive
+a total of 6 cycles.
+
+The patient tolerates chemotherapy reasonably well. She experiences fatigue
+for 3-4 days post-infusion and some mild nausea controlled with ondansetron.
+No significant cytopenias noted on recent labs.
+
+PHYSICAL EXAMINATION::
+Vitals: BP 118/72, HR 68, Temp 98.4\u00b0F
+General: Well-appearing, no acute distress
+Abdomen: Soft, well-healed surgical incision, non-tender
+Extremities: No edema, no evidence of neuropathy
+
+LABORATORY RESULTS::
+CA-125 from last week: 42 (decreased from 156 at baseline)
+CBC: WBC 4.2, Hgb 11.8, Platelets 185 - all within acceptable range
+
+ASSESSMENT AND PLAN::
+61-year-old female with stage IIIC ovarian cancer showing good response
+to adjuvant platinum-based chemotherapy as evidenced by declining CA-125.
+
+Plan:
+1. Continue carboplatin/paclitaxel for 3 additional cycles
+2. Next infusion scheduled for March 4, 2024 (cycle 4 of 6)
+3. Repeat CA-125 with next cycle
+4. After completion of chemotherapy, will discuss maintenance therapy options
+5. Patient counseled on managing fatigue and maintaining nutrition
+
+Signed by: Dr. Jane Smith, MD
+Date: February 15, 2024 at 11:00 AM

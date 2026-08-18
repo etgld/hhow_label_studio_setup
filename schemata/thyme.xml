@@ -1,9 +1,14 @@
 <View>
   <Relations>
-    <Relation value="Doubtful"/>
-    <Relation value="Possible"/>
-    <Relation value="Probable"/>
-    <Relation value="Certain"/>
+    <Relation value="BEFORE"/>
+    <Relation value="CONTAINS"/>
+    <Relation value="OVERLAP"/>
+    <Relation value="BEGINS-ON"/>
+    <Relation value="ENDS-ON"/>
+    <Relation value="CONTINUES"/>
+    <Relation value="INITIATES"/>
+    <Relation value="REINITIATES"/>
+    <Relation value="TERMINATES"/>
   </Relations>
   <View style="display:flex;align-items:start;gap:8px;flex-direction:column-reverse">
     <Text name="text" value="$text" granularity="word"/>
@@ -18,11 +23,15 @@
       <Choice value="BEFORE-OVERLAP" background="blue"/>
       <Choice value="AFTER" background="navy"/>
     </Choices>
+    <Choices name="ConMod" toName="text" perRegion="true">
+      <Choice value="ACTUAL" background="aqua"/>
+      <Choice value="HEDGED" background="teal"/>
+      <Choice value="HYPOTHETICAL" background="teal"/>
+      <Choice value="GENERIC" background="teal"/>
+    </Choices>
     <Labels name="Event" toName="text" showInline="true">
-      <Label value="Adverse Event" background="red"/>
-      <Label value="Radiotherapy Treatment" background="magenta"/>
+      <Label value="ASPECTUAL" background="red"/>
+      <Label value="N/A" background="magenta"/>
     </Labels>
   </View>
-</View><!-- {"data": {
-  "text": "Patient reported nausea one week after previous radiotherapy session, patient reported dizziness immediately after today's session as well."
-}} -->
+</View>

@@ -1,0 +1,41 @@
+===================================================================
+Report ID.....................report01_PRG
+Patient ID....................PT001234
+Patient Name..................Sample Patient A
+Principal Date................20231115 0930
+Record Type...................ONCOLOGY PROGRESS NOTE
+===================================================================
+[Report de-identified (Limited dataset compliant) by De-ID v.6.24.5.1]
+
+CHIEF COMPLAINT::
+Follow-up visit for ongoing breast cancer treatment.
+
+HISTORY OF PRESENT ILLNESS::
+The patient is a 52-year-old female with stage II invasive ductal carcinoma 
+of the left breast, ER+/PR+/HER2-. She was diagnosed on June 15, 2023 via 
+core needle biopsy. Initial staging workup showed a 3.2 cm primary tumor 
+with one positive axillary lymph node.
+
+TREATMENT COURSE::
+The patient initiated neoadjuvant chemotherapy on July 10, 2023.
+She completed 4 cycles of Doxorubicin (Adriamycin) and
+Cyclophosphamide every 3 weeks, with the last dose administered on 
+September 18, 2023. She tolerated this phase well with manageable nausea 
+and fatigue.
+
+She then transitioned to Paclitaxel (Taxol) starting
+October 2, 2023. Most recent infusion was yesterday.
+She reports mild peripheral neuropathy
+in her fingertips but states it is tolerable.
+
+The patient also started Anastrozole 1mg daily on October 15, 2023 for 
+endocrine therapy, which she will continue for 5 years post-treatment.
+
+ASSESSMENT AND PLAN::
+The patient is responding well to neoadjuvant chemotherapy. Repeat imaging 
+from last week shows significant reduction in tumor size to approximately 
+1.5 cm. She will complete her remaining 4 weekly doses of Paclitaxel with 
+the final infusion scheduled for November 27, 2023.
+
+Signed by: Dr. Jane Smith, MD
+Date: November 15, 2023 at 10:15 AM

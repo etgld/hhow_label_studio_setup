@@ -1,0 +1,60 @@
+===================================================================
+Report ID.....................report02_NOTE
+Patient ID....................PT005678
+Patient Name..................Sample Patient B
+Principal Date................20240308 1445
+Record Type...................MEDICAL ONCOLOGY CONSULTATION
+===================================================================
+[Report de-identified (Limited dataset compliant) by De-ID v.6.24.5.1]
+
+REASON FOR CONSULTATION::
+Management of metastatic melanoma.
+
+HISTORY OF PRESENT ILLNESS::
+This is a 68-year-old male with history of stage IV melanoma originally 
+diagnosed in May 2022. Primary site was right upper back with subsequent 
+metastases to regional lymph nodes and lungs. BRAF V600E mutation positive.
+
+PRIOR TREATMENT HISTORY::
+The patient underwent wide local excision and sentinel lymph node biopsy 
+on June 3, 2022. Pathology revealed 2.8 mm Breslow thickness with 
+ulceration and 2 of 3 sentinel nodes positive.
+
+He was initially treated with combination immunotherapy consisting of 
+Nivolumab 1 mg/kg and Ipilimumab 3 mg/kg every 3 weeks. First infusion 
+was on July 20, 2022. He received 4 doses with the last dose on 
+October 5, 2022. Treatment was complicated by grade 2 colitis requiring 
+steroid therapy, and immunotherapy was discontinued.
+
+Due to progression on imaging 6 months ago (September 2023), he was 
+switched to BRAF/MEK inhibitor combination therapy. He started Dabrafenib 
+150 mg PO BID and Trametinib 2 mg PO daily on September 15, 2023. He has 
+been on this regimen for approximately 6 months with good tolerance.
+
+CURRENT STATUS::
+Most recent CT scan from 2 weeks ago (February 23, 2024) shows partial 
+response with 40% reduction in target lesions. Patient reports improved 
+energy and resolution of dyspnea. He has experienced mild pyrexia and 
+occasional chills, managed with acetaminophen.
+
+PHYSICAL EXAMINATION::
+Vitals: BP 128/78, HR 72, Temp 98.8\u00b0F, RR 16
+General: Alert, well-appearing male in no acute distress
+Skin: Well-healed surgical scar on right upper back, no new suspicious lesions
+Lymph nodes: No palpable cervical, supraclavicular, or axillary adenopathy
+Lungs: Clear to auscultation bilaterally
+Cardiovascular: Regular rate and rhythm, no murmurs
+
+ASSESSMENT AND PLAN::
+68-year-old male with stage IV BRAF-mutant melanoma demonstrating excellent 
+response to targeted therapy with Dabrafenib/Trametinib combination.
+
+Plan:
+1. Continue current regimen of Dabrafenib and Trametinib
+2. Repeat CT chest/abdomen/pelvis in 3 months (June 2024)
+3. Monitor for skin toxicity and other adverse effects
+4. Patient counseled on sun protection and self-skin examination
+5. Consider switching back to immunotherapy if disease progression occurs
+
+Electronically signed by: Dr. Jane Smith, MD,
+Date: March 8, 2024 at 3:20 PM
