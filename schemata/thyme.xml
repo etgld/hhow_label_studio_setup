@@ -1,10 +1,12 @@
 <View>
   <Relations>
+    <!-- TLINK types -->
     <Relation value="BEFORE"/>
     <Relation value="CONTAINS"/>
     <Relation value="OVERLAP"/>
     <Relation value="BEGINS-ON"/>
     <Relation value="ENDS-ON"/>
+    <!-- ALINK types -->
     <Relation value="CONTINUES"/>
     <Relation value="INITIATES"/>
     <Relation value="REINITIATES"/>
@@ -23,15 +25,42 @@
       <Choice value="BEFORE-OVERLAP" background="blue"/>
       <Choice value="AFTER" background="navy"/>
     </Choices>
-    <Choices name="ConMod" toName="text" perRegion="true">
+    <Choices name="Contextual Modality" toName="text" perRegion="true">
       <Choice value="ACTUAL" background="aqua"/>
       <Choice value="HEDGED" background="teal"/>
       <Choice value="HYPOTHETICAL" background="teal"/>
       <Choice value="GENERIC" background="teal"/>
     </Choices>
-    <Labels name="Event" toName="text" showInline="true">
+    <Choices name="Contextual Aspect" toName="text" perRegion="true">
+      <Choice value="INTERMITTENT" background="aqua"/>
+      <Choice value="NOVEL" background="teal"/>
+      <Choice value="N/A" background="teal"/>
+    </Choices>
+    <Choices name="Degree" toName="text" perRegion="true">
+      <Choice value="MOST" background="aqua"/>
+      <Choice value="LITTLE" background="teal"/>
+      <Choice value="N/A" background="teal"/>
+    </Choices>
+    <Choices name="Polarity" toName="text" perRegion="true">
+      <Choice value="POS" background="aqua"/>
+      <Choice value="NEG" background="teal"/>
+    </Choices>
+    <Choices name="Permanence" toName="text" perRegion="true">
+      <Choice value="FINITE" background="aqua"/>
+      <Choice value="PERMANENT" background="teal"/>
+      <Choice value="UNDETERMINED" background="teal"/>
+    </Choices>
+    <Labels name="EVENT" toName="text" showInline="true">
       <Label value="ASPECTUAL" background="red"/>
       <Label value="N/A" background="magenta"/>
+    </Labels>
+    <Labels name="TIMEX3" toName="text" showInline="true">
+      <Label value="DATE" background="red"/>
+      <Label value="TIME" background="red"/>
+      <Label value="DURATION" background="red"/>
+      <Label value="QUANTIFIER" background="red"/>
+      <Label value="PREPOSTEXP" background="red"/>
+      <Label value="SET" background="red"/>
     </Labels>
   </View>
 </View>
