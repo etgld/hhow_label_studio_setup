@@ -4,4 +4,4 @@ version = "0.1.0"
 description = "Label Studio setup for Danielle's lab server"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["label-studio", "polars", "ruff", "ty", "more-itertools", "ipython"]
+dependencies = ["label-studio", "polars", "ruff", "ty", "more-itertools", "ipython", "attrs", "cattrs"]
