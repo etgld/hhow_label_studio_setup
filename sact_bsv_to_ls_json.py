@@ -1,7 +1,7 @@
 import argparse
 import os
 import pathlib
-from collections.abc import Collection, Iterable, Mapping, Sequence
+from collections.abc import Collection, Iterable, Mapping
 from collections.abc import Set as AbstractSet
 from dataclasses import dataclass
 from enum import StrEnum
@@ -64,7 +64,7 @@ class Annotation:
 class Note:
     identifier: str
     text: str | None
-    annotations: Sequence[Annotation] | None
+    annotations: AbstractSet[Annotation] | None
 
 
 def get_relevant_bsv_files(input_bsv_dir: str) -> Iterable[pathlib.Path]:
@@ -99,9 +99,9 @@ def row_to_annotation(row: Mapping[str, str]) -> Annotation:
     return Annotation(medication=medication, time_mention=time_mention, tlink=tlink)
 
 
-def get_annotations(path: pathlib.Path) -> Sequence[Annotation]:
+def get_annotations(path: pathlib.Path) -> AbstractSet[Annotation]:
     df = pl.read_csv(path, separator="|").filter(~pl.all_horizontal(pl.all().is_null()))
-    return [row_to_annotation(row) for row in df.to_dicts()]
+    return {row_to_annotation(row) for row in df.to_dicts()}
 
 
 def get_patient(path: pathlib.Path) -> Patient:
@@ -145,7 +145,7 @@ def bsv_files_to_annotation_maps(
 def note_to_note_text_maps(
     note_paths: Iterable[pathlib.Path],
 ) -> Mapping[Patient, AbstractSet[Note]]:
-    return map_reduce(note_paths, keyfunc=get_patient, reducefunc=get_note_with_text)
+    return map_reduce(note_paths, keyfunc=get_patient, reducefunc=get_notes_with_text)
 
 
 def note_cluster(notes: Collection[Note]) -> Note:
@@ -167,7 +167,9 @@ def note_cluster(notes: Collection[Note]) -> Note:
         raise ValueError(f"Problematic note cluster {notes}")
 
 
-def merge_notes(text_notes: AbstractSet[Note], annotation_notes: AbstractSet[Note]) -> AbstractSet[Note]:
+def merge_notes(
+    text_notes: AbstractSet[Note], annotation_notes: AbstractSet[Note]
+) -> AbstractSet[Note]:
     return set(
         map_reduce(
             chain(text_notes, annotation_notes),
