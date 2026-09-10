@@ -97,17 +97,21 @@ def str_to_span(span: str) -> tuple[int, int]:
 
 
 def row_to_annotation(row: Mapping[str, str]) -> Annotation:
+    medication_span_column = " Medication Span "
+    time_span_column = " Time Span "
+    time_type_column = " Time Type "
+    temporal_relation_column = " Temporal Relation "
     if any(
         row.get(key) is None
-        for key in (" Medication Span ", " Time Span ", " Time Type ")
+        for key in (medication_span_column, time_span_column, time_type_column)
     ):
         raise ValueError(f"Bad row: {row}")
-    medication = Medication(span=str_to_span(row.get(" Medication Span ")))
+    medication = Medication(span=str_to_span(row.get(medication_span_column)))
     time_mention = TimeMention(
-        span=str_to_span(row.get(" Time Span ")),
-        time_type=TIMEX3(row.get(" Time Type ")),
+        span=str_to_span(row.get(time_span_column)),
+        time_type=TIMEX3(row.get(time_type_column)),
     )
-    tlink = TLINK(row.get(" Temporal Relation "))
+    tlink = TLINK(row.get(temporal_relation_column))
     return Annotation(medication=medication, time_mention=time_mention, tlink=tlink)
 
 
@@ -131,9 +135,7 @@ def get_note_with_annotations(path: pathlib.Path) -> Note:
 def get_note_with_text(path: pathlib.Path) -> Note:
     with open(path, mode="r") as f:
         text = f.read()
-    return Note(
-        identifier=path.stem.removesuffix("_medTimeSpans"), text=text, annotations=None
-    )
+    return Note(identifier=path.stem, text=text, annotations=None)
 
 
 def get_annotated_notes(
