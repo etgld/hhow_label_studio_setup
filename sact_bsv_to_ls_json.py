@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import pathlib
 from collections.abc import Collection, Iterable, Mapping, Sequence
@@ -127,7 +128,7 @@ def get_relevant_bsv_files(input_bsv_dir: str) -> Iterable[pathlib.Path]:
 def get_relevant_text_files(input_text_dir: str) -> Iterable[pathlib.Path]:
     for root, _, files in os.walk(input_text_dir):
         root_path = pathlib.Path(root)
-        if root_path.stem.lower().startswith("patient"):
+        if root_path.stem.startswith("PT"):
             for fn in files:
                 if fn.endswith(".txt"):
                     yield pathlib.Path(os.path.join(root, fn))
@@ -215,7 +216,7 @@ def note_to_note_text_maps(
 def safe_get[T](notes: Collection[Note], attribute: str) -> T:
     try:
         return one(
-            list(map(attrgetter(attribute), notes)),
+            list(filter(lambda s: s is not None, map(attrgetter(attribute), notes))),
             too_long=ValueError,
             too_short=ValueError,
         )
@@ -235,8 +236,13 @@ def note_cluster(notes: Collection[Note]) -> Note:
             with_text is None and with_annotations is None
         ) or with_text == with_annotations:
             raise ValueError(f"Issue with note cluster {notes}")
+        identifiers = set(map(attrgetter("identifier"), notes))
+        try:
+            identifier = one(identifiers, too_long=ValueError, too_short=ValueError)
+        except ValueError:
+            raise ValueError(f"Multiple identifiers for note cluster {identifiers}")
         return Note(
-            identifier=safe_get(notes, "idenfitifier"),
+            identifier=identifier,
             text=safe_get(notes, "text"),
             annotations=safe_get(notes, "annotations"),
         )
@@ -294,11 +300,11 @@ def local_annotations_to_label_studio_results(
                 id=get_session_unique_salt_string(), note_text=note.text
             )
         )
-    relations = set()
+    relations = []
     for annotation in note.annotations:
         ls_medication = unique_medication_to_label_studio_label[annotation.medication]
         ls_time = unique_time_to_label_studio_label[annotation.time_mention]
-        relations.add(
+        relations.append(
             Relation(
                 from_id=ls_medication.id,
                 to_id=ls_time.id,
@@ -375,7 +381,7 @@ def convert_and_write(
     )
     preannotations = annotated_notes_to_preannotation(patient_to_notes=patient_to_notes)
     with open(os.path.join(output_dir, "result.json"), mode="w") as f:
-        f.write(cattrs.unstructure(preannotations))
+        json.dump(cattrs.unstructure(preannotations), f)
 
 
 def main():
