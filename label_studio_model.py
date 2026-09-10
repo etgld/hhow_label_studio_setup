@@ -7,12 +7,25 @@ from attrs import define
 
 @define
 class Value:
-    id: int
+    start: int
+    end: int
 
 
 @define
 class ChoicesValue(Value):
-    id: int
+    text: str
+    choices: Sequence[str]
+
+
+@define
+class LabelsValue(Value):
+    text: str
+    labels: Sequence[str]
+
+
+@define
+class TextAreaValue(Value):
+    text: str
 
 
 @define
@@ -23,10 +36,28 @@ class Result:
 @define
 class ChoicesResult(Result):
     from_name: str
-    to_name: str
-    origin: str
     value: ChoicesValue
+    to_name: str = "text"
+    origin: str = "manual"
     type: str = "choices"
+
+
+@define
+class LabelsResult(Result):
+    from_name: str
+    value: LabelsValue
+    to_name: str = "text"
+    origin: str = "manual"
+    type: str = "labels"
+
+
+@define
+class TextAreaResult(Result):
+    from_name: str
+    value: TextAreaValue
+    to_name: str = "text"
+    origin: str = "manual"
+    type: str = "textarea"
 
 
 @define
