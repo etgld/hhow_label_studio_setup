@@ -66,6 +66,15 @@ class TextAreaResult(Result):
 
 
 @define
+class Relation:
+    from_id: str
+    to_id: str
+    labels: Sequence[str]
+    type: str = "relation"
+    direction: str = "bi"
+
+
+@define
 class LabelStudioData:
     text: str
 
@@ -73,7 +82,7 @@ class LabelStudioData:
 @define
 class LabelStudioAnnotation:
     id: int
-    result: Sequence[Result]
+    result: Sequence[Result | Relation]
 
 
 @define

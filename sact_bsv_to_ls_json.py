@@ -19,7 +19,10 @@ from label_studio_model import (
     LabelStudioData,
     LabelsValue,
     Preannotation,
+    Relation,
+    Result,
 )
+from utils import get_salt_string
 
 parser = argparse.ArgumentParser(description="")
 
@@ -99,6 +102,18 @@ class Note:
     identifier: str
     text: str | None
     annotations: AbstractSet[Annotation] | None
+
+
+def get_session_unique_salt_string(tries: int = 10) -> str:
+    try_index = 0
+    while try_index < tries:
+        salt_string = get_salt_string()
+        if salt_string not in USED_SALTS:
+            return salt_string
+        try_index += 1
+    raise IndexError(
+        f"Somehow could not obtain a unique salt within {try_index + 1} tries"
+    )
 
 
 def get_relevant_bsv_files(input_bsv_dir: str) -> Iterable[pathlib.Path]:
@@ -250,10 +265,61 @@ def merge_note_mappings(
     }
 
 
-def annotations_to_prediction(
-    annotations: AbstractSet[Annotation],
+def local_annotations_to_label_studio_results(
+    note: Note,
+) -> Sequence[Result | Relation]:
+    if note.annotations is None and note.text is None:
+        raise ValueError(f"Bad note missing everything {note}")
+    elif note.text is None:
+        raise ValueError(f"Note missing text {note}")
+    elif note.annotations is None:
+        return []
+    unique_medications = {annotation.medication for annotation in note.annotations}
+    unique_times = {annotation.time_mention for annotation in note.annotations}
+    unique_medication_to_label_studio_label = {}
+    unique_time_to_label_studio_label = {}
+    for unique_medication in unique_medications:
+        unique_medication_to_label_studio_label[unique_medication] = (
+            unique_medication.to_label_studio_value(
+                id=get_session_unique_salt_string(), note_text=note.text
+            )
+        )
+    for unique_time in unique_times:
+        unique_time_to_label_studio_label[unique_time] = (
+            unique_time.to_label_studio_value(
+                id=get_session_unique_salt_string(), note_text=note.text
+            )
+        )
+    relations = set()
+    for annotation in note.annotations:
+        ls_medication = unique_medication_to_label_studio_label[annotation.medication]
+        ls_time = unique_time_to_label_studio_label[annotation.time_mention]
+        relations.add(
+            Relation(
+                from_id=ls_medication.id,
+                to_id=ls_time.id,
+                labels=[annotation.tlink.value],
+            )
+        )
+
+    return list(
+        chain(
+            unique_medication_to_label_studio_label.values(),
+            unique_time_to_label_studio_label.values(),
+            relations,
+        )
+    )
+
+
+def local_annotations_to_label_studio_annotation(
+    note: Note,
 ) -> Sequence[LabelStudioAnnotation]:
-    return []
+    return [
+        LabelStudioAnnotation(
+            id=-1,  # Temporary
+            result=local_annotations_to_label_studio_results(note=note),
+        )
+    ]
 
 
 def note_to_pre_annotation(patient: Patient, note: Note, index: int) -> Preannotation:
@@ -261,9 +327,7 @@ def note_to_pre_annotation(patient: Patient, note: Note, index: int) -> Preannot
         id=index,
         file_upload=f"{patient.identifier}_{note.identifier}",
         data=LabelStudioData(text=Note.text if Note.text is not None else "ERROR"),
-        predictions=annotations_to_prediction(
-            annotations=Note.annotations if Note.annotations is not None else set()
-        ),
+        predictions=local_annotations_to_label_studio_annotation(note=note),
     )
 
 
