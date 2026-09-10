@@ -11,12 +11,19 @@ from operator import attrgetter
 
 import cattrs
 import polars as pl
-from more_itertools import map_reduce
+from more_itertools import map_reduce, one
 
-from label_studio_model import LabelStudioAnnotation, LabelStudioData, Preannotation
+from label_studio_model import (
+    LabelsResult,
+    LabelStudioAnnotation,
+    LabelStudioData,
+    LabelsValue,
+    Preannotation,
+)
 
 parser = argparse.ArgumentParser(description="")
 
+USED_SALTS = set()
 
 parser.add_argument("--output_dir", type=str)
 parser.add_argument("--input_bsv_dir", type=str)
@@ -50,10 +57,34 @@ class TimeMention:
     span: tuple[int, int]
     time_type: TIMEX3
 
+    def to_label_studio_value(self, id: str, note_text: str) -> LabelsResult:
+        return LabelsResult(
+            value=LabelsValue(
+                start=self.span[0],
+                end=self.span[1],
+                text=note_text[self.span[0] : self.span[1]],
+                labels=[self.time_type.value],
+            ),
+            id=id,
+            from_name="TIMEX3",
+        )
+
 
 @dataclass
 class Medication:
     span: tuple[int, int]
+
+    def to_label_studio_value(self, id: str, note_text: str) -> LabelsResult:
+        return LabelsResult(
+            value=LabelsValue(
+                start=self.span[0],
+                end=self.span[1],
+                text=note_text[self.span[0] : self.span[1]],
+                labels=["ASPECTUAL"],
+            ),
+            id=id,
+            from_name="EVENT",
+        )
 
 
 @dataclass
@@ -162,20 +193,33 @@ def note_to_note_text_maps(
     return map_reduce(note_paths, keyfunc=get_patient, reducefunc=get_notes_with_text)
 
 
+def safe_get[T](notes: Collection[Note], attribute: str) -> T:
+    try:
+        return one(
+            list(map(attrgetter(attribute), notes)),
+            too_long=ValueError,
+            too_short=ValueError,
+        )
+    except ValueError:
+        raise ValueError(f"Problem with attribute {attribute} in notes {notes}")
+
+
 def note_cluster(notes: Collection[Note]) -> Note:
     if len(notes) == 1:
         return next(iter(notes))
     elif len(notes) == 2:
-        with_text = next(note for note in notes if note.text is not None)
-        with_annotations = next(note for note in notes if note.annotations is not None)
+        with_text = next((note for note in notes if note.text is not None), None)
+        with_annotations = next(
+            (note for note in notes if note.annotations is not None), None
+        )
         if (
             with_text is None and with_annotations is None
         ) or with_text == with_annotations:
             raise ValueError(f"Issue with note cluster {notes}")
         return Note(
-            identifier=with_text.identifier,
-            text=with_text.text,
-            annotations=with_annotations.annotations,
+            identifier=safe_get(notes, "idenfitifier"),
+            text=safe_get(notes, "text"),
+            annotations=safe_get(notes, "annotations"),
         )
     else:
         raise ValueError(f"Problematic note cluster {notes}")

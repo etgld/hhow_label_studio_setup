@@ -30,7 +30,7 @@ class TextAreaValue(Value):
 
 @define
 class Result:
-    id: int
+    id: str
     value: Value
     from_name: str
     to_name: str
