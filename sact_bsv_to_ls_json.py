@@ -1,16 +1,19 @@
 import argparse
 import os
 import pathlib
-from collections.abc import Collection, Iterable, Mapping
+from collections.abc import Collection, Iterable, Mapping, Sequence
 from collections.abc import Set as AbstractSet
 from dataclasses import dataclass
 from enum import StrEnum
 from functools import cache
 from itertools import chain
 from operator import attrgetter
+import cattrs
 
 import polars as pl
 from more_itertools import map_reduce
+
+from label_studio_model import LabelStudioAnnotation, LabelStudioData, Preannotation
 
 parser = argparse.ArgumentParser(description="")
 
@@ -72,6 +75,15 @@ def get_relevant_bsv_files(input_bsv_dir: str) -> Iterable[pathlib.Path]:
         for fn in files:
             if fn.endswith("medTimeSpans.bsv"):
                 yield pathlib.Path(os.path.join(root, fn))
+
+
+def get_relevant_text_files(input_text_dir: str) -> Iterable[pathlib.Path]:
+    for root, _, files in os.walk(input_text_dir):
+        root_path = pathlib.Path(root_path)
+        if root_path.stem.lower().startswith("patient"):
+            for fn in files:
+                if fn.endswith(".txt"):
+                    yield pathlib.Path(os.path.join(root, fn))
 
 
 @cache
@@ -192,12 +204,64 @@ def merge_note_mappings(
     }
 
 
+def annotations_to_prediction(
+    annotations: AbstractSet[Annotation],
+) -> Sequence[LabelStudioAnnotation]:
+    return []
+
+
+def note_to_pre_annotation(patient: Patient, note: Note, index: int) -> Preannotation:
+    return Preannotation(
+        id=index,
+        file_upload=f"{patient.identifier}_{note.identifier}",
+        data=LabelStudioData(text=Note.text if Note.text is not None else "ERROR"),
+        predictions=annotations_to_prediction(
+            annotations=Note.annotations if Note.annotations is not None else set()
+        ),
+    )
+
+
+def reset_annotation_id(preannotation: Preannotation, index: int) -> int:
+    if len(preannotation.predictions) > 0:
+        preannotation.predictions[0].id = index
+        return index + 1
+    return index
+
+
+def annotated_notes_to_preannotation(
+    patient_to_notes: Mapping[Patient, AbstractSet[Note]],
+) -> Sequence[Preannotation]:
+    index = 1
+    result = []
+    for patient in sorted(patient_to_notes.keys(), key=attrgetter("identifier")):
+        for note in sorted(patient_to_notes[patient], key=attrgetter("identifier")):
+            result.append(
+                note_to_pre_annotation(patient=patient, note=note, index=index)
+            )
+    index += 1
+    for preannotation in result:
+        index = reset_annotation_id(preannotation=preannotation, index=index)
+    return result
+
+
 def convert_and_write(
     input_bsv_dir: str,
     input_text_dir: str,
     output_dir: str,
 ) -> None:
-    pass
+    relevant_bsv_files = get_relevant_bsv_files(input_bsv_dir=input_bsv_dir)
+    relevant_text_files = get_relevant_text_files(input_text_dir=input_text_dir)
+    annotation_note_mappings = bsv_files_to_annotation_maps(
+        bsv_paths=relevant_bsv_files
+    )
+    text_note_mappings = note_to_note_text_maps(note_paths=relevant_text_files)
+    patient_to_notes = merge_note_mappings(
+        text_note_mappings=text_note_mappings,
+        annotation_note_mappings=annotation_note_mappings,
+    )
+    preannotations = annotated_notes_to_preannotation(patient_to_notes=patient_to_notes)
+    with open(os.path.join(output_dir, "result.json"), mode="w") as f:
+        f.write(cattrs.unstructure(preannotations))
 
 
 def main():

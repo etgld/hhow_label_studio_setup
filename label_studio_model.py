@@ -31,6 +31,11 @@ class TextAreaValue(Value):
 @define
 class Result:
     id: int
+    value: Value
+    from_name: str
+    to_name: str
+    type: str
+    origin: str
 
 
 @define
@@ -73,6 +78,7 @@ class LabelStudioAnnotation:
 
 @define
 class Preannotation:
+    id: int
     file_upload: str
     data: LabelStudioData
     predictions: Sequence[LabelStudioAnnotation]
