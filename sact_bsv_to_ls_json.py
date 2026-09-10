@@ -48,14 +48,15 @@ class TIMEX3(StrEnum):
     QUANTIFIER = "QUANTIFIER"
     PREPOSTEXP = "PREPOSTEXP"
     SET = "SET"
+    INSTANT = "INSTANT"
 
 
-@dataclass
+@dataclass(frozen=True)
 class Patient:
     identifier: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class TimeMention:
     span: tuple[int, int]
     time_type: TIMEX3
@@ -73,7 +74,7 @@ class TimeMention:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class Medication:
     span: tuple[int, int]
 
@@ -90,7 +91,7 @@ class Medication:
         )
 
 
-@dataclass
+@dataclass(frozen=True)
 class Annotation:
     medication: Medication
     time_mention: TimeMention
@@ -101,7 +102,7 @@ class Annotation:
 class Note:
     identifier: str
     text: str | None
-    annotations: AbstractSet[Annotation] | None
+    annotations: frozenset[Annotation] | None
 
 
 def get_session_unique_salt_string(tries: int = 10) -> str:
@@ -157,13 +158,16 @@ def row_to_annotation(row: Mapping[str, str]) -> Annotation:
         span=str_to_span(row.get(time_span_column)),
         time_type=TIMEX3(row.get(time_type_column)),
     )
-    tlink = TLINK(row.get(temporal_relation_column))
+    tlink_category = row.get(temporal_relation_column)
+    if tlink_category is None:
+        raise ValueError(f"Missing TLINK {row.get(temporal_relation_column)}")
+    tlink = TLINK(tlink_category.removesuffix("-1"))
     return Annotation(medication=medication, time_mention=time_mention, tlink=tlink)
 
 
-def get_annotations(path: pathlib.Path) -> AbstractSet[Annotation]:
+def get_annotations(path: pathlib.Path) -> frozenset[Annotation]:
     df = pl.read_csv(path, separator="|").filter(~pl.all_horizontal(pl.all().is_null()))
-    return {row_to_annotation(row) for row in df.to_dicts()}
+    return frozenset({row_to_annotation(row) for row in df.to_dicts()})
 
 
 def get_patient(path: pathlib.Path) -> Patient:
@@ -326,7 +330,7 @@ def note_to_pre_annotation(patient: Patient, note: Note, index: int) -> Preannot
     return Preannotation(
         id=index,
         file_upload=f"{patient.identifier}_{note.identifier}",
-        data=LabelStudioData(text=Note.text if Note.text is not None else "ERROR"),
+        data=LabelStudioData(text=note.text if note.text is not None else "ERROR"),
         predictions=local_annotations_to_label_studio_annotation(note=note),
     )
 

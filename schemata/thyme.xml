@@ -61,6 +61,7 @@
       <Label value="QUANTIFIER" background="red"/>
       <Label value="PREPOSTEXP" background="red"/>
       <Label value="SET" background="red"/>
+      <Label value="INSTANT" background="red"/>
     </Labels>
   </View>
 </View>
