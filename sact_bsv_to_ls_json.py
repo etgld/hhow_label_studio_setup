@@ -8,8 +8,8 @@ from enum import StrEnum
 from functools import cache
 from itertools import chain
 from operator import attrgetter
-import cattrs
 
+import cattrs
 import polars as pl
 from more_itertools import map_reduce
 
@@ -79,7 +79,7 @@ def get_relevant_bsv_files(input_bsv_dir: str) -> Iterable[pathlib.Path]:
 
 def get_relevant_text_files(input_text_dir: str) -> Iterable[pathlib.Path]:
     for root, _, files in os.walk(input_text_dir):
-        root_path = pathlib.Path(root_path)
+        root_path = pathlib.Path(root)
         if root_path.stem.lower().startswith("patient"):
             for fn in files:
                 if fn.endswith(".txt"):
