@@ -1,0 +1,40 @@
+<View>
+  <Relations>
+    <!-- TLINK types -->
+    <Relation value="BEFORE"/>
+    <Relation value="CONTAINS"/>
+    <Relation value="OVERLAP"/>
+    <Relation value="BEGINS-ON"/>
+    <Relation value="ENDS-ON"/>
+  </Relations>
+  <View style="display:flex;align-items:start;gap:8px;flex-direction:column-reverse">
+    <Text name="text" value="$text" granularity="word"/>
+    <TextArea name="CUI" toName="text" editable="true"
+              showSubmitButton="true" transcription="false"
+              perRegion="true" required="true" maxSubmissions="1"
+              rows="5" placeholder="Non UMLS Concept"
+              displayMode="region-list"/>
+    <Choices name="DocTimeRel" toName="text" perRegion="true">
+      <Choice value="BEFORE" background="aqua"/>
+      <Choice value="OVERLAP" background="teal"/>
+      <Choice value="BEFORE-OVERLAP" background="blue"/>
+      <Choice value="AFTER" background="navy"/>
+    </Choices>
+    <Choices name="Contextual Modality" toName="text" perRegion="true">
+      <Choice value="ACTUAL" background="aqua"/>
+      <Choice value="HEDGED" background="teal"/>
+      <Choice value="HYPOTHETICAL" background="blue"/>
+      <Choice value="GENERIC" background="navy"/>
+    </Choices>
+    <Choices name="Polarity" toName="text" perRegion="true">
+      <Choice value="POS" background="aqua"/>
+      <Choice value="NEG" background="teal"/>
+    </Choices>
+    <Labels name="EVENT" toName="text" showInline="true">
+      <Label value="EVENT" background="rebeccapurple"/>
+    </Labels>
+    <Labels name="TIMEX3" toName="text" showInline="true">
+      <Label value="TIMEX" background="paleturquoise"/>
+    </Labels>
+  </View>
+</View>
