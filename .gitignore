@@ -1,0 +1,12 @@
+#  MacOS really rocks
+.DS_Store
+
+# No PHI input or results!!!!
+*.json
+*.bsv
+
+# No cache nonsense
+*.pyc
+
+# No file locks
+*.lock

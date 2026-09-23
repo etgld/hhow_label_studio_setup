@@ -290,6 +290,8 @@ def local_annotations_to_label_studio_results(
     unique_times = {annotation.time_mention for annotation in note.annotations}
     unique_medication_to_label_studio_label = {}
     unique_time_to_label_studio_label = {}
+    medication_id_to_medication = {}
+    time_id_to_time = {}
     for unique_medication in unique_medications:
         unique_medication_to_label_studio_label[unique_medication] = (
             unique_medication.to_label_studio_value(
@@ -306,6 +308,8 @@ def local_annotations_to_label_studio_results(
     for annotation in note.annotations:
         ls_medication = unique_medication_to_label_studio_label[annotation.medication]
         ls_time = unique_time_to_label_studio_label[annotation.time_mention]
+        medication_id_to_medication[ls_medication.id] = ls_medication
+        time_id_to_time[ls_time.id] = ls_time
         relations.append(
             Relation(
                 from_id=ls_medication.id,
@@ -314,13 +318,24 @@ def local_annotations_to_label_studio_results(
             )
         )
 
-    return list(
+    def _result_span(result: Result) -> tuple[int, int]:
+        value = result.value
+        return value.start, value.end
+
+    def _rel_span(relation: Relation) -> tuple[int, int]:
+        medication = medication_id_to_medication.get(relation.from_id)
+        time = time_id_to_time.get(relation.from_id)
+        if medication is None or time is None:
+            raise ValueError(f"Relation {relation} missing an event or timex")
+        return medication.value.start, time.value.start
+
+    return sorted(
         chain(
             unique_medication_to_label_studio_label.values(),
             unique_time_to_label_studio_label.values(),
-            relations,
-        )
-    )
+        ),
+        key=_result_span,
+    ) + sorted(relations, key=_rel_span)
 
 
 def local_annotations_to_label_studio_annotation(
@@ -360,7 +375,7 @@ def annotated_notes_to_preannotation(
             result.append(
                 note_to_pre_annotation(patient=patient, note=note, index=index)
             )
-    index += 1
+            index += 1
     for preannotation in result:
         index = reset_annotation_id(preannotation=preannotation, index=index)
     return result
