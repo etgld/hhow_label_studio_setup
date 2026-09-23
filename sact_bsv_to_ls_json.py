@@ -324,7 +324,7 @@ def local_annotations_to_label_studio_results(
 
     def _rel_span(relation: Relation) -> tuple[int, int]:
         medication = medication_id_to_medication.get(relation.from_id)
-        time = time_id_to_time.get(relation.from_id)
+        time = time_id_to_time.get(relation.to_id)
         if medication is None or time is None:
             raise ValueError(f"Relation {relation} missing an event or timex")
         return medication.value.start, time.value.start
