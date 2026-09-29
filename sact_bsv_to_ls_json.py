@@ -37,6 +37,7 @@ parser.add_argument("--input_text_dir", type=str)
 class TLINK(StrEnum):
     BEFORE = "BEFORE"
     CONTAINS = "CONTAINS"
+    CONTAINS_1 = "CONTAINS-1"
     OVERLAP = "OVERLAP"
     BEGINS_ON = "BEGINS-ON"
     ENDS_ON = "ENDS-ON"
@@ -164,7 +165,7 @@ def row_to_annotation(row: Mapping[str, str]) -> Annotation:
     tlink_category = row.get(temporal_relation_column)
     if tlink_category is None:
         raise ValueError(f"Missing TLINK {row.get(temporal_relation_column)}")
-    tlink = TLINK(tlink_category.removesuffix("-1"))
+    tlink = TLINK(tlink_category)
     return Annotation(medication=medication, time_mention=time_mention, tlink=tlink)
 
 
@@ -305,30 +306,51 @@ def local_annotations_to_label_studio_results(
             )
         )
     relations = []
-    for annotation in note.annotations:
-        ls_medication = unique_medication_to_label_studio_label[annotation.medication]
-        ls_time = unique_time_to_label_studio_label[annotation.time_mention]
-        medication_id_to_medication[ls_medication.id] = ls_medication
-        time_id_to_time[ls_time.id] = ls_time
-        relations.append(
-            Relation(
-                from_id=ls_medication.id,
-                to_id=ls_time.id,
-                labels=[annotation.tlink.value],
-                direction="bi",
-            )
-        )
 
     def _result_span(result: Result) -> tuple[int, int]:
         value = result.value
         return value.start, value.end
 
+    for annotation in note.annotations:
+        ls_medication = unique_medication_to_label_studio_label[annotation.medication]
+        ls_time = unique_time_to_label_studio_label[annotation.time_mention]
+        medication_id_to_medication[ls_medication.id] = ls_medication
+        time_id_to_time[ls_time.id] = ls_time
+        time_annotation_span = _result_span(ls_time)
+        medication_annotation_span = _result_span(ls_medication)
+        relations.append(
+            Relation(
+                from_id=ls_time.id,
+                to_id=ls_medication.id,
+                labels=["CONTAINS"],
+                direction="right"
+                if time_annotation_span < medication_annotation_span
+                else "left",
+            )
+            if annotation.tlink == TLINK.CONTAINS_1
+            else Relation(
+                from_id=ls_medication.id,
+                to_id=ls_time.id,
+                labels=[annotation.tlink.value],
+                direction="right"
+                if medication_annotation_span < time_annotation_span
+                else "left",
+            )
+        )
+
     def _rel_span(relation: Relation) -> tuple[int, int]:
-        medication = medication_id_to_medication.get(relation.from_id)
-        time = time_id_to_time.get(relation.to_id)
-        if medication is None or time is None:
-            raise ValueError(f"Relation {relation} missing an event or timex")
-        return medication.value.start, time.value.start
+        if relation.labels == ["CONTAINS"]:
+            medication = medication_id_to_medication.get(relation.to_id)
+            time = time_id_to_time.get(relation.from_id)
+            if medication is None or time is None:
+                raise ValueError(f"Relation {relation} missing an event or timex")
+            return time.value.start, medication.value.start
+        else:
+            medication = medication_id_to_medication.get(relation.from_id)
+            time = time_id_to_time.get(relation.to_id)
+            if medication is None or time is None:
+                raise ValueError(f"Relation {relation} missing an event or timex")
+            return medication.value.start, time.value.start
 
     return sorted(
         chain(
