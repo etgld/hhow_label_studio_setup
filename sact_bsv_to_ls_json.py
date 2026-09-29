@@ -316,25 +316,25 @@ def local_annotations_to_label_studio_results(
         ls_time = unique_time_to_label_studio_label[annotation.time_mention]
         medication_id_to_medication[ls_medication.id] = ls_medication
         time_id_to_time[ls_time.id] = ls_time
-        time_annotation_span = _result_span(ls_time)
-        medication_annotation_span = _result_span(ls_medication)
+        # time_annotation_span = _result_span(ls_time)
+        # medication_annotation_span = _result_span(ls_medication)
         relations.append(
             Relation(
                 from_id=ls_time.id,
                 to_id=ls_medication.id,
                 labels=["CONTAINS"],
-                direction="right"
-                if time_annotation_span < medication_annotation_span
-                else "left",
+                direction="right",
+                # if time_annotation_span < medication_annotation_span
+                # else "left",
             )
             if annotation.tlink == TLINK.CONTAINS_1
             else Relation(
                 from_id=ls_medication.id,
                 to_id=ls_time.id,
                 labels=[annotation.tlink.value],
-                direction="right"
-                if medication_annotation_span < time_annotation_span
-                else "left",
+                direction="right",
+                # if medication_annotation_span < time_annotation_span
+                # else "left",
             )
         )
 
