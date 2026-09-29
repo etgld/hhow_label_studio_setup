@@ -70,8 +70,8 @@ class Relation:
     from_id: str
     to_id: str
     labels: Sequence[str]
+    direction: str
     type: str = "relation"
-    direction: str = "bi"
 
 
 @define

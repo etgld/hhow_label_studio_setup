@@ -315,6 +315,7 @@ def local_annotations_to_label_studio_results(
                 from_id=ls_medication.id,
                 to_id=ls_time.id,
                 labels=[annotation.tlink.value],
+                direction="bi",
             )
         )
 
